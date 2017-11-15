@@ -298,6 +298,12 @@ struct lttng_ctx_field {
 	} u;
 	void (*destroy)(struct lttng_ctx_field *field);
 	char *field_name;	/* Has ownership, dynamically allocated. */
+	/*
+	 * Private data to keep state between get_size and record.
+	 * User must perform its own synchronization to protect against
+	 * concurrent and reentrant contexts.
+	 */
+	void *priv;
 };
 
 #define LTTNG_UST_CTX_PADDING	20
@@ -673,6 +679,7 @@ int lttng_add_procname_to_ctx(struct lttng_ctx **ctx);
 int lttng_add_ip_to_ctx(struct lttng_ctx **ctx);
 int lttng_add_cpu_id_to_ctx(struct lttng_ctx **ctx);
 int lttng_add_dyntest_to_ctx(struct lttng_ctx **ctx);
+int lttng_add_callstack_to_ctx(struct lttng_ctx **ctx);
 void lttng_context_vtid_reset(void);
 void lttng_context_vpid_reset(void);
 void lttng_context_procname_reset(void);
