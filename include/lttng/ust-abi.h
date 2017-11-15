@@ -141,6 +141,7 @@ enum lttng_ust_context_type {
 	LTTNG_UST_CONTEXT_PERF_THREAD_COUNTER	= 5,
 	LTTNG_UST_CONTEXT_CPU_ID		= 6,
 	LTTNG_UST_CONTEXT_APP_CONTEXT		= 7,
+	LTTNG_UST_CONTEXT_CALLSTACK		= 8,
 };
 
 struct lttng_ust_perf_counter_ctx {

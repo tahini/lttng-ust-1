@@ -1015,6 +1015,8 @@ int lttng_attach_context(struct lttng_ust_context *context_param,
 	case LTTNG_UST_CONTEXT_APP_CONTEXT:
 		return lttng_ust_add_app_context_to_ctx_rcu(uargs->app_context.ctxname,
 			ctx);
+	case LTTNG_UST_CONTEXT_CALLSTACK:
+			return lttng_add_callstack_to_ctx(ctx);
 	default:
 		return -EINVAL;
 	}

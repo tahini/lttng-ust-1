@@ -372,6 +372,11 @@ int lttng_session_context_init(struct lttng_ctx **ctx)
 		WARN("Cannot add context lttng_add_cpu_id_to_ctx");
 		goto error;
 	}
+	ret = lttng_add_callstack_to_ctx(ctx);
+	if (ret) {
+		WARN("Cannot add context lttng_add_callstack_to_ctx");
+		goto error;
+	}
 	lttng_context_update(*ctx);
 	return 0;
 
