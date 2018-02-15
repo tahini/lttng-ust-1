@@ -60,6 +60,7 @@
 #include "lttng-tracer.h"
 #include "lttng-tracer-core.h"
 #include "lttng-ust-statedump.h"
+#include "lttng-ust-statedump-global.h"
 #include "wait.h"
 #include "../libringbuffer/shm.h"
 #include "jhash.h"
@@ -394,6 +395,7 @@ int lttng_session_statedump(struct lttng_session *session)
 {
 	session->statedump_pending = 1;
 	lttng_ust_sockinfo_session_enabled(session->owner);
+	do_lttng_ust_statedump_global(session);
 	return 0;
 }
 
@@ -403,6 +405,7 @@ int lttng_session_enable(struct lttng_session *session)
 	struct lttng_channel *chan;
 	int notify_socket;
 
+	DBG("Insession");
 	if (session->active) {
 		ret = -EBUSY;
 		goto end;
