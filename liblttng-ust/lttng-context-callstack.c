@@ -30,9 +30,37 @@
 #include <helper.h>
 #include <execinfo.h>
 #include "lttng-tracer-core.h"
+#define UNW_LOCAL_ONLY
+#include <libunwind.h>
 
 #define CONTEXT_NAME "callstack_user"
 #define MAX_ENTRIES 128
+
+
+inline size_t unwind_stack(void** stack, size_t maxsize)
+{
+	unw_context_t unwind_context;
+	unw_getcontext(&unwind_context);
+
+  unw_cursor_t unwind_cursor;
+  int ret = unw_init_local(&unwind_cursor, &unwind_context);
+  if (ret != 0)
+    return 0;
+
+  size_t i;
+  for (i = 0; i < maxsize; ++i)
+  {
+    void* ip = NULL;
+    if (unw_get_reg(&unwind_cursor, UNW_REG_IP, (unw_word_t*)&ip) < 0)
+      break;
+
+    stack[i] = ip;
+    if (unw_step(&unwind_cursor) <= 0)
+      break;
+  }
+
+  return i;
+}
 
 struct lttng_backtrace {
 	unsigned int nr_entries;
@@ -59,7 +87,7 @@ size_t callstack_get_size(struct lttng_ctx_field *field, size_t offset)
 	offset += sizeof(unsigned int);
 
 	/* Obtain the backtrace at this point, returns the number of enries */
-	size = backtrace(cs_backtrace->entries, MAX_ENTRIES);
+	size = unwind_stack(cs_backtrace->entries, MAX_ENTRIES);
 	cs_backtrace->nr_entries = size;
 
 	/* Add the number of entries to offset */
