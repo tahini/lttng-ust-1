@@ -225,6 +225,12 @@ struct lttng_statedump_table *lttng_statedump_table_create(void)
 
 void lttng_statedump_table_destroy(struct lttng_statedump_table *st)
 {
+	lttng_statedump_table_clear(st);
+	free(st);
+}
+
+void lttng_statedump_table_clear(struct lttng_statedump_table *st)
+{
 	struct lttng_statedump_node *sn, *t;
 	int i;
 
@@ -234,7 +240,6 @@ void lttng_statedump_table_destroy(struct lttng_statedump_table *st)
 			free(sn);
 		}
 	}
-	free(st);
 }
 
 int lttng_statedump_table_add(struct lttng_statedump_table *st,
@@ -278,6 +283,7 @@ int lttng_statedump_table_del(struct lttng_statedump_table *st,
 	}
 	if (!found)
 		return -ENOENT;
+
 	cds_hlist_del(&sn->node);
 	free(sn);
 	return 0;
