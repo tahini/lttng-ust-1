@@ -37,7 +37,7 @@
 #define MAX_ENTRIES 128
 
 
-inline size_t unwind_stack(void** stack, size_t maxsize)
+static size_t unwind_stack(void** stack, size_t maxsize)
 {
 	unw_context_t unwind_context;
 	unw_getcontext(&unwind_context);
